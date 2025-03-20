@@ -20,6 +20,15 @@ public class SecurityConfig {
 				.anyRequest().authenticated() // 가장 일반적인 경우를 마지막에 처리
 			);
 
+		http
+			.formLogin((auth) -> auth.loginPage("/login") // 로그인 페이지
+				.loginProcessingUrl("/login") // 로그인 폼 액션 URL
+				.permitAll()
+			);
+
+		http
+			.csrf((auth) -> auth.disable()); // CSRF 토큰 없이 로그인을 진행할 수 있도록 임시 비활성화
+
 		return http.build();
 	}
 
