@@ -7,6 +7,13 @@
 <body>
 login page
 <hr>
+
+<!-- 에러 메시지 출력 시작 -->
+<ul>
+    <li th:each="message : ${errorMessage}" th:text="${message}" style="color: red;"></li>
+</ul>
+<!-- 에러 메시지 출력 끝 -->
+
 <form th:action="@{/login}" method="post" name="loginForm">
     <label for="username"></label><input id="username" name="username" type="text" placeholder="id" />
     <label for="password"></label><input id="password" name="password" type="password" placeholder="password" />
