@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Join Page</title>
+</head>
+<body>
+join page
+<hr>
+
+<!-- 에러 메시지 출력 시작 -->
+<ul>
+    <li th:each="message : ${errorMessage}" th:text="${message}" style="color: red;"></li>
+</ul>
+<!-- 에러 메시지 출력 끝 -->
+
+<form th:action="@{/join}" method="post" name="joinForm">
+    <label for="username"></label><input id="username" name="username" type="text" placeholder="id" />
+    <label for="password"></label><input id="password" name="password" type="password" placeholder="password" />
+    <input value="join" type="submit" />
+</form>
+</body>
