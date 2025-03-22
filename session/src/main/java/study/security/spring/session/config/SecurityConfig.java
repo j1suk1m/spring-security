@@ -40,6 +40,17 @@ public class SecurityConfig {
 		http
 			.csrf((auth) -> auth.disable()); // CSRF 토큰 없이 로그인을 진행할 수 있도록 임시 비활성화
 
+		http
+			.sessionManagement((auth) -> auth // 세션 관리
+				.maximumSessions(1) // 허용 가능한 최대 세션 개수 // 동일 아이디에 대한 다중 로그인 횟수
+				.maxSessionsPreventsLogin(true) // 최대 세션 개수를 초과한 경우 처리
+												// true: 다중 로그인 차단, false(default): 기존 세션 만료
+			);
+
+		http
+			.sessionManagement((auth) -> auth
+				.sessionFixation().changeSessionId()); // 로그인 시 동일 세션에 대한 세션 아이디 변경
+
 		return http.build();
 	}
 
