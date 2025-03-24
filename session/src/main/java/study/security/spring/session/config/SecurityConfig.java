@@ -1,5 +1,6 @@
 package study.security.spring.session.config;
 
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -7,8 +8,11 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import lombok.RequiredArgsConstructor;
 import study.security.spring.session.security.handler.CustomLoginFailureHandler;
@@ -37,6 +41,11 @@ public class SecurityConfig {
 				.loginProcessingUrl("/login") // 로그인 폼 액션 URL
 				.failureHandler(authenticationFailureHandler) // 로그인 실패 처리
 				.permitAll()
+			);
+
+		http
+			.logout((auth) -> auth.logoutUrl("/logout") // 로그아웃 수행 URL
+				.logoutSuccessUrl("/") // 로그아웃 성공 후 리다이렉트될 URL
 			);
 
 		http
@@ -76,6 +85,16 @@ public class SecurityConfig {
 		return RoleHierarchyImpl.withDefaultRolePrefix() // ROLE_ 접두사 자동 추가
 			.role("ADMIN").implies("USER") // ROLE_ADMIN > ROLE_USER
 			.build();
+	}
+
+	@Bean
+	public SessionRegistry sessionRegistry() {
+		return new SessionRegistryImpl();
+	}
+
+	@Bean
+	public static ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+		return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
 	}
 
 }
