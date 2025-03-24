@@ -2,6 +2,8 @@ package study.security.spring.session.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,7 +28,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests((auth) -> auth
 				.requestMatchers("/", "/login", "/join").permitAll()
 				.requestMatchers("/admin").hasRole("ADMIN")
-				.requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
+				.requestMatchers("/my/**").hasAnyRole("USER")
 				.anyRequest().authenticated() // 가장 일반적인 경우를 마지막에 처리
 			);
 
@@ -67,6 +69,13 @@ public class SecurityConfig {
 		provider.setHideUserNotFoundExceptions(false);
 
 		return provider;
+	}
+
+	@Bean
+	public RoleHierarchy roleHierarchy() {
+		return RoleHierarchyImpl.withDefaultRolePrefix() // ROLE_ 접두사 자동 추가
+			.role("ADMIN").implies("USER") // ROLE_ADMIN > ROLE_USER
+			.build();
 	}
 
 }
